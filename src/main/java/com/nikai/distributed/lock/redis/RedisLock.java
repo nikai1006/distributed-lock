@@ -1,6 +1,8 @@
 package com.nikai.distributed.lock.redis;
 
 import java.util.Collections;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 
 /**
  * distributed-lock com.nikai.distributed.lock.redis
@@ -13,7 +15,10 @@ import java.util.Collections;
 public class RedisLock {
     public static final String lua = "if redis.call('get', KEYS[1]) == ARGV[1]  then   return redis.call('del', KEYS[1]) else return 0 end";
 
-    public static boolean tryLock(final String key, final String value) {
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    public  boolean tryLock(final String key, final String value) {
         while (true) {
             Long lock = JedisUtils.setnx(key, value);
             if (lock == 1) {
@@ -22,13 +27,13 @@ public class RedisLock {
         }
     }
 
-    public static void lock(final String key, final String value, final int cacheSeconds) {
+    public  void lock(final String key, final String value, final int cacheSeconds) {
         if (tryLock(key, value)) {
             JedisUtils.setexpire(key, value, cacheSeconds);
         }
     }
 
-    public static void unlock(final String key, final String value) {
+    public  void unlock(final String key, final String value) {
         JedisUtils.eval(lua, Collections.singletonList(key), Collections.singletonList(value));
     }
 }
