@@ -20,7 +20,7 @@ public class Main {
         t2.start();
     }
 
-    private RedisLock lock = new RedisLock();
+  static   private RedisLock lock = new RedisLock();
     static class UserThread implements Runnable {
 
         @Override
