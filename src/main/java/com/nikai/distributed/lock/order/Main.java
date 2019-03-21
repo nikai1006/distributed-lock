@@ -25,6 +25,7 @@ public class Main {
 
         @Override
         public void run() {
+            lock.lock("1","2",3);
             new Order().createOrder();
             Boolean result = new Stock().reduceGoods();
             if (result) {
@@ -34,6 +35,7 @@ public class Main {
             } else {
                 System.out.println(Thread.currentThread().getName() + "减库存失败");
             }
+            lock.unlock("1","2");
         }
     }
 }
