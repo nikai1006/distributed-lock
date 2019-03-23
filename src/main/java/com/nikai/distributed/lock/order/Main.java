@@ -28,6 +28,7 @@ public class Main {
             lock.lock("1","2",3);
             new Order().createOrder();
             Boolean result = new Stock().reduceGoods();
+            lock.unlock("1","2");
             if (result) {
                 System.out.println(Thread.currentThread().getName() + "减库存成功");
                 new Pay().pay();
@@ -35,7 +36,6 @@ public class Main {
             } else {
                 System.out.println(Thread.currentThread().getName() + "减库存失败");
             }
-            lock.unlock("1","2");
         }
     }
 }
