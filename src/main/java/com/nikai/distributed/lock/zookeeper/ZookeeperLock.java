@@ -48,7 +48,7 @@ public class ZookeeperLock {
                 int currentIndex = children
                     .indexOf(CURRENT_NODE.get().substring(CURRENT_NODE.get().lastIndexOf("/") + 1));
                 String prevNodeName = children.get(currentIndex - 1);
-                CountDownLatch countDownLatch = new CountDownLatch(1);
+                final CountDownLatch countDownLatch = new CountDownLatch(1);
                 zk.get().exists(LOCK_NAME + "/" + prevNodeName, (watchEvent) -> {
                     if (EventType.NodeDeleted.equals(watchEvent.getType())) {
                         countDownLatch.countDown();
