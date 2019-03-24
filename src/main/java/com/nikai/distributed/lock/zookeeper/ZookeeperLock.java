@@ -33,7 +33,7 @@ public class ZookeeperLock {
     }
 
     public boolean tryLock() {
-        String nodeName = CURRENT_NODE.get() + "/zk_";
+        String nodeName = LOCK_NAME + "/zk_";
         try {
             CURRENT_NODE
                 .set(zk.get().create(nodeName, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL));
