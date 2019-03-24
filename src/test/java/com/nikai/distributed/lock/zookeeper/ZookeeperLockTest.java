@@ -1,9 +1,7 @@
 package com.nikai.distributed.lock.zookeeper;
 
 import java.util.List;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.ZooDefs.Ids;
+import org.apache.zookeeper.Watcher.Event.EventType;
 import org.apache.zookeeper.ZooKeeper;
 import org.junit.Test;
 
@@ -25,7 +23,19 @@ public class ZookeeperLockTest {
         List<String> children = zk.getChildren("/myserver", false);
         children.forEach(child -> System.out.println(child));
 
-        zk.create("/MYLOCK","lock".getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+//        创建持久节点
+//        zk.create("/MYLOCK", "lock".getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+//        zk.delete("/");
+
+        zk.exists("/MYLOCK", (watchEvent) -> {
+            EventType eventType = watchEvent.getType();
+            if (EventType.NodeDeleted.equals(eventType)) {
+                System.out.println("节点被删掉了");
+            }
+        });
+        System.in.read();
+        zk.close();
+
     }
 
 }
