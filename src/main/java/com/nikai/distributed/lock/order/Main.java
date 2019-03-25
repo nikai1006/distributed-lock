@@ -28,8 +28,8 @@ public class Main {
         @Override
         public void run() {
 //            lock.lock("1", "2", 3);
-            lock.lock();
             new Order().createOrder();
+            lock.lock();
             Boolean result = new Stock().reduceGoods();
 //            lock.unlock("1", "2");
             lock.unlock();

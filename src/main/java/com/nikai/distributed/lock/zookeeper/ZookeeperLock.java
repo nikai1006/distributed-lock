@@ -1,5 +1,6 @@
 package com.nikai.distributed.lock.zookeeper;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -23,13 +24,19 @@ public class ZookeeperLock {
 
     public static final String LOCK_NAME = "/MYLOCK";
 
-    private static ThreadLocal<String> CURRENT_NODE = new ThreadLocal<>();
+    private ThreadLocal<String> CURRENT_NODE = new ThreadLocal<>();
 
     public void init() throws Exception {
-        zk.set(new ZooKeeper("nikai.org:2181", 3000, (watchEvent) -> {
-            System.out.println(watchEvent.getPath());
-        }));
-        CURRENT_NODE.set("");
+        if (zk.get() == null) {
+            try {
+                zk.set(new ZooKeeper("nikai.org:2181", 3000, (watchEvent) -> {
+                    //                System.out.println(watchEvent.getPath());
+                }));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+//        CURRENT_NODE.set("");
     }
 
     public boolean tryLock() {
